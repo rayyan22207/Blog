@@ -7,14 +7,13 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
 
-            <div class="card shadow-sm">
+            <!-- Blog Post Card -->
+            <div class="card shadow-sm mb-4">
                 {% if post.image %}
                     <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
                 {% endif %}
-
                 <div class="card-body">
                     <h1 class="card-title">{{ post.title }}</h1>
-
                     <p class="text-muted mb-2">
                         Posted by <strong>{{ post.author.username }}</strong>
                         on {{ post.created_at|date:"F j, Y" }}
@@ -22,43 +21,62 @@
                             | Category: {{ post.category.name }}
                         {% endif %}
                     </p>
-
                     <hr>
-
                     <div class="post-content" style="white-space: pre-wrap;">
                         {{ post.content }}
                     </div>
-
                     <hr class="mt-4">
-                    <p class="text-muted">Last updated: {{ post.updated_at|date:"F j, Y, g:i a" }}</p>
+                    <p class="text-muted small">Last updated: {{ post.updated_at|date:"F j, Y, g:i a" }}</p>
+                </div>
+            </div>
+
+            <!-- Like Button -->
+            <div class="d-flex align-items-center mb-4">
+                <button id="likeBtn" class="btn btn-outline-danger me-2" title="{% if post.liked_by_user %}You liked this{% else %}Click to like{% endif %}">
+                    {% if post.liked_by_user %}
+                        ❤️
+                    {% else %}
+                        🤍
+                    {% endif %}
+                    Like
+                </button>
+                <span id="likeCount" class="fw-semibold">{{ post.likes.count }}</span> likes
+            </div>
+
+            <!-- Comment Input -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Leave a Comment</h5>
+                    <textarea id="commentInput" class="form-control mb-2" rows="3" placeholder="Type your comment here..."></textarea>
+                    <div class="d-grid">
+                        <button id="submitComment" class="btn btn-primary">Post Comment</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comment List -->
+            <div class="mb-5">
+                <h5 class="mb-3">Comments</h5>
+                <div id="commentList">
+                    {% for comment in post.comments.all %}
+                        <div class="border p-3 mb-3 rounded bg-light">
+                            <div class="mb-1">
+                                <strong>{{ comment.user.username }}</strong> 
+                                <span class="text-muted small">• {{ comment.created_at|date:"M j, Y g:i A" }}</span>
+                            </div>
+                            <p class="mb-0">{{ comment.content }}</p>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">No comments yet. Be the first to say something!</p>
+                    {% endfor %}
                 </div>
             </div>
 
         </div>
     </div>
 </div>
-<hr>
-<div class="d-flex align-items-center mb-3">
-    <button id="likeBtn" class="btn btn-outline-danger me-2">❤️ Like</button>
-    <span id="likeCount">{{ post.likes.count }}</span> Likes
-</div>
 
-<!-- Comment box -->
-<div class="mb-4">
-    <textarea id="commentInput" class="form-control mb-2" rows="2" placeholder="Leave a comment..."></textarea>
-    <button id="submitComment" class="btn btn-primary">Post Comment</button>
-</div>
-
-<!-- Existing comments -->
-<div id="commentList">
-    {% for comment in post.comments.all %}
-        <div class="border p-2 mb-2 rounded bg-light">
-            <strong>{{ comment.user.username }}</strong> • {{ comment.created_at|date:"M j, Y g:i A" }}
-            <p class="mb-0">{{ comment.content }}</p>
-        </div>
-    {% endfor %}
-</div>
-
+<!-- Like & Comment JS -->
 <script>
     const likeBtn = document.getElementById('likeBtn');
     const likeCount = document.getElementById('likeCount');
@@ -83,7 +101,7 @@
 
     document.getElementById('submitComment').addEventListener('click', () => {
         const content = commentInput.value;
-        if (!content) return;
+        if (!content.trim()) return;
 
         fetch('{% url "api_comment_post" slug=post.slug %}', {
             method: 'POST',
@@ -97,13 +115,18 @@
         .then(data => {
             if (data.success) {
                 const div = document.createElement('div');
-                div.className = 'border p-2 mb-2 rounded bg-light';
-                div.innerHTML = `<strong>${data.username}</strong> • just now<p class="mb-0">${data.content}</p>`;
+                div.className = 'border p-3 mb-3 rounded bg-light';
+                div.innerHTML = `
+                    <div class="mb-1">
+                        <strong>${data.username}</strong> 
+                        <span class="text-muted small">• just now</span>
+                    </div>
+                    <p class="mb-0">${data.content}</p>
+                `;
                 commentList.prepend(div);
                 commentInput.value = '';
             }
         });
     });
 </script>
-
 {% endblock %}

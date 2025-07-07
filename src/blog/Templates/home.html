@@ -29,8 +29,17 @@
                     <p class="text-muted mb-1">{{ post.created_at|date:"F j, Y" }}</p>
                     <h4>{{ post.title }}</h4>
                     <p class="card-text">{{ post.content|truncatechars:150 }}</p>
-                    <!-- <a href="#" class="btn btn-primary btn-sm">Read more →</a> -->
-                    <a href="{% url 'post_detail' slug=post.slug %}" class="btn btn-primary btn-sm">Read more →</a>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{% url 'post_detail' slug=post.slug %}" class="btn btn-primary btn-sm">Read more →</a>
+                        <span class="text-muted small" title="{% if post.liked_by_user %}You liked this{% else %}{% endif %}">
+                            {% if post.liked_by_user %}
+                                ❤️ {{ post.likes.count }} likes
+                            {% else %}
+                                🤍 {{ post.likes.count }} likes
+                            {% endif %}
+                        </span>
+                    </div>
                 </div>
             </div>
             {% empty %}
