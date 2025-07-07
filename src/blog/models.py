@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 
 
 # Create your models here.
@@ -14,6 +14,7 @@ class BlogPost(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to='blog_images/', blank=True, null=True)
     is_published = models.BooleanField(default=True)
+    likes = GenericRelation('Like')
 
     def __str__(self):
         return self.title
@@ -27,6 +28,7 @@ class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)
+    likes = GenericRelation('Like')
 
     def __str__(self):
         return f'Comment by {self.user.username if self.user else "Deleted User"}'
