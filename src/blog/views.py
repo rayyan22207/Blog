@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import BlogPost
 from .forms import BlogPostForm
 from django.contrib.auth.decorators import login_required
@@ -27,3 +27,8 @@ def create_post(request):
     else:
         form = BlogPostForm()
     return render(request, 'create_post.html', {'form': form})
+
+
+def post_detail(request, slug):
+    post = get_object_or_404(BlogPost, slug=slug, is_published=True)
+    return render(request, 'post_detail.html', {'post': post})
