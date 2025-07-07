@@ -3,6 +3,88 @@
 {% block title %}Home | My Blog{% endblock %}
 
 {% block content %}
-    <h1 class="mb-4">Recent Posts</h1>
-    <!-- your post list here -->
+<div class="container">
+    <div class="py-5 text-center">
+        <h1 class="fw-bold">Welcome to Blog Home!</h1>
+        <p class="lead">A Bootstrap 5 starter layout for your next blog homepage</p>
+    </div>
+
+    <div class="row">
+        <!-- Main blog column -->
+        <div class="col-md-8">
+
+            {% for post in posts %}
+            <div class="card mb-4 shadow-sm">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
+                {% else %}
+                    <svg class="bd-placeholder-img card-img-top" width="100%" height="350"
+                        xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
+                        preserveAspectRatio="xMidYMid slice" focusable="false">
+                        <title>No Image</title>
+                        <rect width="100%" height="100%" fill="#e9ecef"></rect>
+                        <text x="50%" y="50%" fill="#adb5bd" dy=".3em" text-anchor="middle">850 x 350</text>
+                    </svg>
+                {% endif %}
+                <div class="card-body">
+                    <p class="text-muted mb-1">{{ post.created_at|date:"F j, Y" }}</p>
+                    <h4>{{ post.title }}</h4>
+                    <p class="card-text">{{ post.content|truncatechars:150 }}</p>
+                    <a href="#" class="btn btn-primary btn-sm">Read more →</a>
+                </div>
+            </div>
+            {% empty %}
+            <p>No posts yet.</p>
+            {% endfor %}
+
+        </div>
+
+        <!-- Sidebar widgets -->
+        <div class="col-md-4">
+            <!-- Search -->
+            <div class="card mb-4">
+                <div class="card-header">Search</div>
+                <div class="card-body">
+                    <form>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Enter search term...">
+                            <button class="btn btn-primary" type="button">Go!</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="card mb-4">
+                <div class="card-header">Categories</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <ul class="list-unstyled mb-0">
+                                <li><a href="#">Web Design</a></li>
+                                <li><a href="#">HTML</a></li>
+                                <li><a href="#">Freebies</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-6">
+                            <ul class="list-unstyled mb-0">
+                                <li><a href="#">JavaScript</a></li>
+                                <li><a href="#">CSS</a></li>
+                                <li><a href="#">Tutorials</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side Widget -->
+            <div class="card mb-4">
+                <div class="card-header">Side Widget</div>
+                <div class="card-body">
+                    You can put anything you want inside of these side widgets. They are easy to use and feature the Bootstrap 5 card component!
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
