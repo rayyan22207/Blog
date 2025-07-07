@@ -1,0 +1,27 @@
+# Ignore SQLite database
+*.sqlite3
+*.sqlite3-journal
+
+# Ignore uploaded media (like profile pics, blog images, etc.)
+media/
+mediafiles/
+profile_pics/
+
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+.env/
+.env.local
+
+# VSCode or PyCharm
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+db.sqlite3
