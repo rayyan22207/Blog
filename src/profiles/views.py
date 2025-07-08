@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from profiles.models import Profile
 from .forms import ProfileForm
-
+from blog.models import BlogPost 
 
 def profile_view(request, username):
     user_obj = get_object_or_404(User, username=username)
@@ -14,6 +14,8 @@ def profile_view(request, username):
     is_following = viewer.is_following(profile) if viewer and not is_own_profile else False
     is_blocking = viewer.is_blocking(profile) if viewer and not is_own_profile else False
 
+    posts = BlogPost.objects.filter(author=user_obj, is_published=True).order_by('-created_at')
+
     context = {
         'profile_user': user_obj,
         'profile': profile,
@@ -23,8 +25,10 @@ def profile_view(request, username):
         'followers_count': profile.followers.count(),
         'following_count': profile.following.count(),
         'blocked_count': profile.blocked_by.count(),
+        'posts': posts,
     }
     return render(request, 'profile.html', context)
+
 
 
 @login_required

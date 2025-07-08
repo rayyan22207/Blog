@@ -4,58 +4,59 @@
 {% block content %}
 <div class="container mt-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-lg-10 col-md-12">
 
-            <div class="card shadow-sm p-4">
-                <div class="d-flex align-items-center mb-3">
+            <!-- Profile Card -->
+            <div class="card shadow p-4 mb-5">
+                <div class="d-flex align-items-center">
                     {% if profile.profile_pic %}
                         <img src="{{ profile.profile_pic.url }}" alt="Profile Picture"
-                             class="rounded-circle me-3" style="width: 80px; height: 80px; object-fit: cover;">
+                             class="rounded-circle me-4 border" style="width: 90px; height: 90px; object-fit: cover;">
                     {% else %}
-                        <div class="bg-secondary rounded-circle me-3"
-                             style="width: 80px; height: 80px;"></div>
+                        <div class="bg-secondary rounded-circle me-4" style="width: 90px; height: 90px;"></div>
                     {% endif %}
+
                     <div>
-                        <h3 class="mb-0">{{ profile_user.username }}</h3>
+                        <h3 class="mb-1">{{ profile_user.username }}</h3>
                         {% if profile.full_name %}
-                            <p class="text-muted mb-0">{{ profile.full_name }}</p>
+                            <p class="text-muted mb-1">{{ profile.full_name }}</p>
                         {% endif %}
                         <small class="text-muted">Joined {{ profile.joined_at|date:"F Y" }}</small>
                     </div>
                 </div>
 
                 {% if profile.bio %}
-                    <p class="mt-3">{{ profile.bio }}</p>
+                    <p class="mt-4 text-muted" style="font-style: italic;">“{{ profile.bio }}”</p>
                 {% endif %}
 
-                <div class="mb-3">
+                <div class="row mt-3">
                     {% if profile.age %}
-                        <p><strong>Age:</strong> {{ profile.age }}</p>
+                        <div class="col-sm-4"><strong>Age:</strong> {{ profile.age }}</div>
                     {% endif %}
                     {% if profile.location %}
-                        <p><strong>Location:</strong> {{ profile.location }}</p>
+                        <div class="col-sm-4"><strong>Location:</strong> {{ profile.location }}</div>
                     {% endif %}
                     {% if profile.website %}
-                        <p><strong>Website:</strong> <a href="{{ profile.website }}" target="_blank">{{ profile.website }}</a></p>
+                        <div class="col-sm-4">
+                            <strong>Website:</strong> <a href="{{ profile.website }}" target="_blank">{{ profile.website }}</a>
+                        </div>
                     {% endif %}
                 </div>
 
-                <hr>
-
                 <!-- Follow/Block Actions -->
                 {% if not is_own_profile %}
-                    <div class="d-flex gap-3 mb-3">
-                        <button class="btn {% if is_following %}btn-outline-danger{% else %}btn-outline-primary{% endif %}">
+                    <div class="d-flex gap-3 mt-4">
+                        <button class="btn {% if is_following %}btn-danger{% else %}btn-primary{% endif %}">
                             {% if is_following %}Unfollow{% else %}Follow{% endif %}
                         </button>
-                        <button class="btn {% if is_blocking %}btn-outline-warning{% else %}btn-outline-dark{% endif %}">
+                        <button class="btn {% if is_blocking %}btn-warning{% else %}btn-outline-dark{% endif %}">
                             {% if is_blocking %}Unblock{% else %}Block{% endif %}
                         </button>
                     </div>
                 {% endif %}
 
                 <!-- Stats -->
-                <div class="d-flex justify-content-between text-center mt-4">
+                <div class="d-flex justify-content-around text-center mt-4">
                     <div>
                         <h5 class="mb-0">{{ followers_count }}</h5>
                         <small class="text-muted">Followers</small>
@@ -70,6 +71,41 @@
                     </div>
                 </div>
             </div>
+
+            <!-- User's Posts -->
+            {% if posts %}
+            <div>
+                <h4 class="mb-4">Posts by {{ profile_user.username }}</h4>
+                <div class="row g-4">
+                    {% for post in posts %}
+                    <div class="col-md-6">
+                        <div class="card h-100 shadow-sm">
+                            {% if post.image %}
+                                <img src="{{ post.image.url }}" class="card-img-top" alt="Post Image" style="height: 200px; width: 100%; object-fit: contain; background-color: #f8f9fa;">
+                            {% endif %}
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ post.title }}</h5>
+                                <p class="card-text text-muted small">{{ post.created_at|date:"M d, Y" }}</p>
+                                <p class="card-text">{{ post.content|truncatechars:100 }}</p>
+
+                                <div class="mt-auto d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">{{ post.likes.count }} ❤️</small>
+                                    <div class="d-flex gap-2">
+                                        <a href="{% url 'post_detail' slug=post.slug %}" class="btn btn-sm btn-outline-primary">View</a>
+                                        {% if request.user == post.author %}
+                                            <a href="{% url 'edit_post' slug=post.slug %}" class="btn btn-sm btn-outline-warning">Edit</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+                <p class="text-center text-muted mt-4">No posts by this user yet.</p>
+            {% endif %}
 
         </div>
     </div>
