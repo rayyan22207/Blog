@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("blog.urls")),
     path('profiles/', include("profiles.urls")),
+    path('events/', include("events.urls")),
     path('api/posts/<slug:slug>/like/', api_view.api_like_post, name='api_like_post'),
     path('api/posts/<slug:slug>/comment/', api_view.api_comment_post, name='api_comment_post'),
     path('api/profiles/<str:username>/follow/', api_view.toggle_follow, name='profile_follow'),
