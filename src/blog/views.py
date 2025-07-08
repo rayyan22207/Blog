@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from .models import BlogPost, Like
 from .forms import BlogPostForm
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 
 def home(request):
     posts = BlogPost.objects.filter(is_published=True)
@@ -45,3 +46,22 @@ def post_detail(request, slug):
         post.liked_by_user = False
 
     return render(request, 'post_detail.html', {'post': post})
+
+
+
+@login_required
+def edit_post(request, slug):
+    post = get_object_or_404(BlogPost, slug=slug)
+
+    if post.author != request.user:
+        return HttpResponseForbidden("You are not allowed to edit this post.")
+
+    if request.method == 'POST':
+        form = BlogPostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect('post_detail', slug=post.slug)
+    else:
+        form = BlogPostForm(instance=post)
+
+    return render(request, 'edit_post.html', {'form': form, 'post': post})

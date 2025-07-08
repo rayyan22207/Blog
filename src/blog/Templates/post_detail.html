@@ -6,7 +6,11 @@
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-md-10">
-
+            {% if user == post.author %}
+                <div class="mb-4 text-end">
+                    <a href="{% url 'edit_post' slug=post.slug %}" class="btn btn-warning">✏️ Edit Post</a>
+                </div>
+            {% endif %}
             <!-- Blog Post Card -->
             <div class="card shadow-sm mb-4">
                 {% if post.image %}
@@ -42,6 +46,7 @@
                 </button>
                 <span id="likeCount" class="fw-semibold">{{ post.likes.count }}</span> likes
             </div>
+            
 
             <!-- Comment Input -->
             <div class="card shadow-sm mb-4">
