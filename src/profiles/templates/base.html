@@ -24,11 +24,19 @@
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'profile_view'  user.username%}">Hi {{ user.username }}</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Logout</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {% with user.profile.profile_pic.url as pic %}
+                                    <img src="{{ pic }}" alt="Profile Pic" class="rounded-circle me-2" style="height: 30px; width: 30px; object-fit: cover;">
+                                {% endwith %}
+                                {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{% url 'profile_view' user.username %}">👤 View Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'edit_profile' %}">✏️ Edit Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="">🚪 Logout</a></li>
+                            </ul>
                         </li>
                     {% else %}
                         <li class="nav-item">
