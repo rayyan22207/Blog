@@ -1,3 +1,7 @@
+![Screenshot (140)](https://github.com/user-attachments/assets/e3485865-cd5e-4fbe-af38-b22f217f6c0d)
+![Screenshot (141)](https://github.com/user-attachments/assets/85d6b5f7-8fe4-4f67-b79e-1485353c9d17)
+![Screenshot (144)](https://github.com/user-attachments/assets/c1c000e6-d378-40c2-b27b-c77933256b2f)
+![Screenshot (145)](https://github.com/user-attachments/assets/fee1bc63-e578-4955-bd79-9148de9db3c6)
 # 📝 Django Real-Time Blog
 
 A feature-rich blog application built using **Django** and **Django Channels**, supporting real-time notifications, user interactions, profile management, and a clean Bootstrap frontend.
