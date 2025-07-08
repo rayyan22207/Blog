@@ -7,9 +7,6 @@ media/
 mediafiles/
 profile_pics/
 
-# Byte-compiled / cache files
-__pycache__/
-*.py[cod]
 
 # Virtual environments
 venv/
