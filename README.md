@@ -87,6 +87,7 @@ python -m virtualenv venv
 venv\Scripts\activate # for Windows
 source venv/bin/activate    # For mac or other
 git clone https://github.com/rayyan22207/Blog.git
+pip install -r requirements.txt
 cd src
 python manage.py migrate
 python manage.py createsuperuser
