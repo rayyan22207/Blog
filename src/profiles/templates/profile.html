@@ -46,10 +46,12 @@
                 <!-- Follow/Block Actions -->
                 {% if not is_own_profile %}
                     <div class="d-flex gap-3 mt-4">
-                        <button class="btn {% if is_following %}btn-danger{% else %}btn-primary{% endif %}">
+                        <button id="followBtn"
+                                class="btn {% if is_following %}btn-danger{% else %}btn-primary{% endif %}">
                             {% if is_following %}Unfollow{% else %}Follow{% endif %}
                         </button>
-                        <button class="btn {% if is_blocking %}btn-warning{% else %}btn-outline-dark{% endif %}">
+                        <button id="blockBtn"
+                                class="btn {% if is_blocking %}btn-warning{% else %}btn-outline-dark{% endif %}">
                             {% if is_blocking %}Unblock{% else %}Block{% endif %}
                         </button>
                     </div>
@@ -58,7 +60,7 @@
                 <!-- Stats -->
                 <div class="d-flex justify-content-around text-center mt-4">
                     <div>
-                        <h5 class="mb-0">{{ followers_count }}</h5>
+                        <h5 id="followersCount" class="mb-0">{{ followers_count }}</h5>
                         <small class="text-muted">Followers</small>
                     </div>
                     <div>
@@ -110,4 +112,84 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const blockBtn = document.getElementById('blockBtn');
+    let followBtn = document.getElementById('followBtn');
+    const followersCount = document.getElementById('followersCount');
+    const username = "{{ profile_user.username }}";
+
+    // Store original follow button HTML for restoration later
+    const followBtnHTML = followBtn ? followBtn.outerHTML : '';
+
+    function attachFollowEvent() {
+        followBtn = document.getElementById('followBtn');
+        if (!followBtn) return;
+
+        followBtn.addEventListener('click', () => {
+            fetch(`/api/profiles/${username}/follow/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    followBtn.textContent = data.following ? "Unfollow" : "Follow";
+                    followBtn.className = data.following ? "btn btn-danger" : "btn btn-primary";
+                    let count = parseInt(followersCount.textContent);
+                    if (data.following) {
+                        followersCount.textContent = count + 1;
+                    } else {
+                        followersCount.textContent = count - 1;
+                    }
+                }
+            });
+        });
+    }
+
+    if (followBtn) {
+        attachFollowEvent();
+    }
+
+    if (blockBtn) {
+        blockBtn.addEventListener('click', () => {
+            fetch(`/api/profiles/${username}/block/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    blockBtn.textContent = data.blocking ? "Unblock" : "Block";
+                    blockBtn.className = data.blocking ? "btn btn-warning" : "btn btn-outline-dark";
+
+                    // If blocking, remove Follow button and decrease count
+                    if (data.blocking) {
+                        if (followBtn) followBtn.remove();
+                        let count = parseInt(followersCount.textContent);
+                        if (count > 0) {
+                            followersCount.textContent = count - 1;
+                        }
+                    }
+
+                    // If unblocking, restore Follow button and reattach events
+                    if (!data.blocking && !document.getElementById('followBtn')) {
+                        const container = blockBtn.parentElement;
+                        container.insertAdjacentHTML('afterbegin', followBtnHTML);
+                        attachFollowEvent();
+                    }
+                }
+            });
+        });
+    }
+});
+</script>
 {% endblock %}
