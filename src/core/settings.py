@@ -128,7 +128,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ASGI_APPLICATION = 'core.asgi.application'
+ASGI_APPLICATION = "core.routing.application"
+
 
 CHANNEL_LAYERS = {
     "default": {
