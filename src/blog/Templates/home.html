@@ -55,12 +55,10 @@
                 <div class="card mb-4">
                     <div class="card-header">Notifications</div>
                     <div class="card-body">
-                        <ul class="list-unstyled mb-0">
-                            <li>🔥 Hassan just posted: “How I Learned Django”</li>
-                            <li>💬 You have 2 new comments</li>
-                            <li>❤️ Zoya liked your post</li>
+                        <ul class="list-unstyled mb-0" id="notification-list">
+                            <li class="text-muted">Waiting for new notifications...</li>
                         </ul>
-                        <p class="text-muted small mt-2">* Real-time coming soon</p>
+                        <p class="text-muted small mt-2">* Real-time enabled</p>
                     </div>
                 </div>
 
@@ -110,5 +108,28 @@ fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://zenquo
     `;
   })
   .catch(err => console.error('Failed to load quote:', err));
+
+
+// 🔔 WebSocket for real-time notifications
+const userId = "{{ request.user.id }}";
+const socket = new WebSocket(`ws://${window.location.host}/ws/notifications/${userId}/`);
+
+socket.onmessage = function(event) {
+  const data = JSON.parse(event.data);
+  const list = document.getElementById("notification-list");
+
+  // Remove default "Waiting" message if present
+  if (list.children.length === 1 && list.children[0].classList.contains("text-muted")) {
+    list.innerHTML = '';
+  }
+
+  const li = document.createElement("li");
+  li.textContent = "🔔 " + data.message;
+  list.prepend(li);  // newest on top
+};
+
+socket.onclose = function(e) {
+  console.error("Notification socket closed unexpectedly");
+};
 </script>
 {% endblock %}
