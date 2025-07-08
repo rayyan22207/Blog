@@ -49,57 +49,66 @@
         </div>
 
         <!-- Sidebar widgets -->
-        <div class="col-md-4">
-            <!-- Search -->
-            <div class="card mb-4">
-                <div class="card-header">Search</div>
-                <div class="card-body">
-                    <!-- <form>
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Enter search term...">
-                            <button class="btn btn-primary" type="button">Go!</button>
-                        </div>
-                    </form> -->
-                    <p class="text-center">Working on</p>
-                </div>
-            </div>
+            <div class="col-md-4">
 
-            <!-- Categories -->
-            <div class="card mb-4">
-                <div class="card-header">Categories</div>
-                <div class="card-body">
-                    <div class="row">
-                        <!-- <div class="col-sm-6">
-                            <ul class="list-unstyled mb-0">
-                                <li><a href="#">Web Design</a></li>
-                                <li><a href="#">HTML</a></li>
-                                <li><a href="#">Freebies</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-sm-6">
-                            <ul class="list-unstyled mb-0">
-                                <li><a href="#">JavaScript</a></li>
-                                <li><a href="#">CSS</a></li>
-                                <li><a href="#">Tutorials</a></li>
-                            </ul>
-                        </div> -->
-                        <p class="text-center">Working on</p>
+                <!-- 🔔 Notifications -->
+                <div class="card mb-4">
+                    <div class="card-header">Notifications</div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li>🔥 Hassan just posted: “How I Learned Django”</li>
+                            <li>💬 You have 2 new comments</li>
+                            <li>❤️ Zoya liked your post</li>
+                        </ul>
+                        <p class="text-muted small mt-2">* Real-time coming soon</p>
                     </div>
                 </div>
-            </div>
-            <div class="d-grid">
-                <a href="{% url 'create_post' %}" class="btn btn-success btn-block">Create Post</a>
-            </div>
 
-
-            <!-- Side Widget -->
-            <!-- <div class="card mb-4">
-                <div class="card-header">Side Widget</div>
-                <div class="card-body">
-                    You can put anything you want inside of these side widgets. They are easy to use and feature the Bootstrap 5 card component!
+                <!-- 👥 Suggestions -->
+                <div class="card mb-4">
+                    <div class="card-header">People You May Know</div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li><a href="#">mujtaba_dev</a> – Full Stack</li>
+                            <li><a href="#">zainab.codes</a> – Data Analyst</li>
+                            <li><a href="#">arsalan.ai</a> – ML Engineer</li>
+                        </ul>
+                    </div>
                 </div>
-            </div> -->
-        </div>
+
+                <!-- 🧠 Quick Tip -->
+                <div class="card mb-4">
+                    <div class="card-header">Tip of the Day</div>
+                    <div class="card-body p-3">
+                        <div id="tip-text" class="blockquote mb-0 text-secondary" style="font-size: 0.95rem; padding-left: 5px;">
+                            <p>“Build daily. Even if it's one line.”</p>
+                            <footer class="blockquote-footer mt-1">Rayyan Aqil</footer>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ✍️ Create CTA -->
+                <div class="d-grid">
+                    <a href="{% url 'create_post' %}" class="btn btn-success btn-block">✍️ Create Post</a>
+                </div>
+
+            </div>
+
+
     </div>
 </div>
+{% endblock %}
+{% block extra_js %}
+<script>
+fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://zenquotes.io/api/random'))
+  .then(res => res.json())
+  .then(data => {
+    const quoteData = JSON.parse(data.contents)[0];
+    document.getElementById("tip-text").innerHTML = `
+      <p class="mb-0">“${quoteData.q}”</p>
+      <footer class="blockquote-footer mt-1">${quoteData.a}</footer>
+    `;
+  })
+  .catch(err => console.error('Failed to load quote:', err));
+</script>
 {% endblock %}
